@@ -28,6 +28,46 @@ Or the [GNU ed manual](chrome-extension://klbibkeccnjlkjkiokjodocebajanakg/suspe
 
 **NOTE:** This port/clone does not implement all ed commands, only a subset.
 
+## Example
+
+Here is an example `ed` session:
+
+```#!sh
+$ ed
+> a
+Start typing a few lines.
+Anything you want, really.
+Just go right ahead.
+When you're done, just type a period by itself.
+.
+> p
+When you're done, just type a period by itself.
+> n
+4	When you're done, just type a period by itself.
+> .n
+4	When you're done, just type a period by itself.
+> 3
+Just go right ahead.
+> .n
+3	Just go right ahead.
+> a
+Entering another line.
+.
+> n
+4	Entering another line.
+> i
+A line before the current line.
+.
+> n
+4	A line before the current line.
+> c
+I decided I like this line better.
+.
+> n
+4	I decided I like this line better.
+>
+```
+
 ## License
 
 `ed` is licensed under the terms of the [MIT License](https://opensource.org/licenses/MIT)
