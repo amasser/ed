@@ -13,6 +13,18 @@ func cmdAppend(e Editor, buf Buffer, cmd Command) error {
 	return nil
 }
 
+func cmdDelete(e Editor, buf Buffer, cmd Command) error {
+	buf.Delete(cmd.Addr().Start(), cmd.Addr().End())
+	return nil
+}
+
+func cmdChange(e Editor, buf Buffer, cmd Command) error {
+	buf.Delete(cmd.Addr().Start(), cmd.Addr().End())
+	e.SetMode(modeAppend)
+	e.SetPrompt("")
+	return nil
+}
+
 func cmdInsert(e Editor, buf Buffer, cmd Command) error {
 	e.SetMode(modeInsert)
 	e.SetPrompt("")

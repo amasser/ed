@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io"
+	"log"
 )
 
 // Buffer ...
@@ -11,6 +12,7 @@ type Buffer interface {
 	io.WriterTo
 
 	Append(line string)
+	Delete(start, end int)
 	Insert(line string)
 	Move(n int) error
 	Current(lineno bool) string
@@ -24,6 +26,16 @@ type buffer struct {
 func (b *buffer) Append(line string) {
 	b.lines = append(b.lines[:b.index], append([]string{line}, b.lines[b.index:]...)...)
 	b.index++
+}
+
+func (b *buffer) Delete(start, end int) {
+	if start == 0 && end == -1 {
+		start, end = b.index, b.index
+		b.lines = append(b.lines[:(start-1)], b.lines[end:]...)
+		b.index--
+	} else {
+		log.Printf("deleting from %d to %d", start, end)
+	}
 }
 
 func (b *buffer) Insert(line string) {
