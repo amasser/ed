@@ -3,8 +3,9 @@ package main
 import (
 	"fmt"
 	"io"
-	"log"
 	"os"
+
+	log "github.com/sirupsen/logrus"
 )
 
 func cmdAppend(e Editor, buf Buffer, cmd Command) error {
@@ -22,6 +23,14 @@ func cmdChange(e Editor, buf Buffer, cmd Command) error {
 	buf.Delete(cmd.Addr())
 	e.SetMode(modeInsert)
 	e.SetPrompt("")
+	return nil
+}
+
+func cmdFile(e Editor, buf Buffer, cmd Command) error {
+	e.SetFilename(cmd.Arg(0))
+	if e.Filename() != "" {
+		fmt.Println(e.Filename())
+	}
 	return nil
 }
 
@@ -70,16 +79,32 @@ func cmdQuit(e Editor, buf Buffer, cmd Command) error {
 
 func cmdWrite(e Editor, buf Buffer, cmd Command) error {
 	filename := cmd.Arg(0)
+	if filename == "" {
+		filename = e.Filename()
+	}
+
+	if filename == "" {
+		err := errNoFileSpecified
+		log.WithError(err).Error("error must specify a filename or set a default filename")
+		return err
+	}
+
+	if e.Filename() == "" {
+		e.SetFilename(filename)
+	}
+
 	f, err := os.OpenFile(filename, os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0644)
 	if err != nil {
 		log.Printf("error opening file for writing: %s", err)
 		return err
 	}
 	defer f.Close()
+
 	_, err = io.Copy(f, buf)
 	if err != nil {
 		log.Printf("rror writing to output file: %s", err)
 		return err
 	}
+
 	return nil
 }

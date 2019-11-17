@@ -16,6 +16,8 @@ type Editor interface {
 
 	Stop()
 	Run() error
+	Filename() string
+	SetFilename(filename string)
 	SetMode(mode int)
 	SetPrompt(prompt string)
 	Handle(cmd string, handler Handler)
@@ -26,10 +28,12 @@ type editor struct {
 	mode     int
 	running  bool
 	buffer   Buffer
+	filename string
 	handlers map[string]Handler
 }
 
 func newEditor() (Editor, error) {
+	// TODO: Use functional options pattern here
 	rl, err := readline.NewEx(&readline.Config{
 		Prompt:  "> ",
 		VimMode: true,
@@ -66,6 +70,14 @@ func (e *editor) ReadFrom(r io.Reader) (n int64, err error) {
 		return
 	}
 	return
+}
+
+func (e *editor) Filename() string {
+	return e.filename
+}
+
+func (e *editor) SetFilename(filename string) {
+	e.filename = filename
 }
 
 func (e *editor) SetMode(mode int) {
