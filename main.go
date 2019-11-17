@@ -61,7 +61,8 @@ func main() {
 	e.Handle("wq", cmdWriteQuit)
 
 	if len(flag.Args()) == 1 {
-		f, err := os.Open(flag.Arg(0))
+		filename := flag.Arg(0)
+		f, err := os.Open(filename)
 		if err != nil {
 			log.WithError(err).Error("error opening file")
 			os.Exit(1)
@@ -71,6 +72,7 @@ func main() {
 			os.Exit(1)
 		}
 		f.Close()
+		e.SetFilename(filename)
 	}
 
 	if prompt != "" {
