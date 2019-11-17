@@ -60,6 +60,10 @@ func (b *buffer) Move(n int) error {
 }
 
 func (b *buffer) Select(addr Address, showlns bool) []string {
+	if len(b.lines) == 0 {
+		return nil
+	}
+
 	if addr.IsUnspecified() {
 		if showlns {
 			return []string{fmt.Sprintf("%d\t%s", b.index, b.lines[(b.index-1)])}
