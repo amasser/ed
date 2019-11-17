@@ -58,6 +58,7 @@ func main() {
 	e.Handle("p", cmdPrint)
 	e.Handle("q", cmdQuit)
 	e.Handle("w", cmdWrite)
+	e.Handle("wq", cmdWriteQuit)
 
 	if len(flag.Args()) == 1 {
 		f, err := os.Open(flag.Arg(0))

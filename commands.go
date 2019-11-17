@@ -108,3 +108,10 @@ func cmdWrite(e Editor, buf Buffer, cmd Command) error {
 
 	return nil
 }
+
+func cmdWriteQuit(e Editor, buf Buffer, cmd Command) error {
+	if err := cmdWrite(e, buf, cmd); err != nil {
+		return err
+	}
+	return cmdQuit(e, buf, cmd)
+}
