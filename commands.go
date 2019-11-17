@@ -20,7 +20,7 @@ func cmdDelete(e Editor, buf Buffer, cmd Command) error {
 
 func cmdChange(e Editor, buf Buffer, cmd Command) error {
 	buf.Delete(cmd.Addr())
-	e.SetMode(modeAppend)
+	e.SetMode(modeInsert)
 	e.SetPrompt("")
 	return nil
 }

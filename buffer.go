@@ -81,6 +81,7 @@ func (b *buffer) Delete(addr Address) {
 
 func (b *buffer) Insert(line string) {
 	b.lines = append(b.lines[:(b.index-1)], append([]string{line}, b.lines[(b.index-1):]...)...)
+	b.index++
 }
 
 func (b *buffer) Move(addr Address) error {
