@@ -71,6 +71,10 @@ func main() {
 		f.Close()
 	}
 
+	if prompt != "" {
+		e.SetPrompt(prompt)
+	}
+
 	if err := e.Run(); err != nil {
 		log.Printf("error running editor: %s", err)
 		os.Exit(1)
