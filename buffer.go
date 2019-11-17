@@ -68,8 +68,14 @@ func (b *buffer) Delete(addr Address) {
 				end = addr.End()
 			}
 		}
-		b.lines = append(b.lines[:(start-1)], b.lines[end:]...)
-		b.index -= (end - start) + 1
+
+		b.lines = append(b.lines[:start], b.lines[(end+1):]...)
+
+		if len(b.lines) == 0 {
+			b.index = 0
+		} else {
+			b.index -= (end - (start - 1))
+		}
 	}
 }
 
