@@ -32,19 +32,14 @@ func cmdInsert(e Editor, buf Buffer, cmd Command) error {
 }
 
 func cmdMove(e Editor, buf Buffer, cmd Command) error {
-	var n int
-
-	if cmd.Addr().Start() == 0 {
-		n = buf.Index()
-	} else {
-		n = cmd.Addr().Start()
-	}
-
-	if n == 0 && buf.Size() == 0 {
+	// Special case of an empty command which is also the move command
+	// If for example we press ENTER (unspecified address) and the buffer is empty
+	// then do nothing.
+	if cmd.Addr().Start() == 0 && buf.Size() == 0 {
 		return nil
 	}
 
-	err := buf.Move(n)
+	err := buf.Move(cmd.Addr())
 	if err != nil {
 		log.Printf("error moving to line %d: %s", cmd.Addr().Start(), err)
 		return err

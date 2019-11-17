@@ -17,7 +17,7 @@ type Buffer interface {
 	Current(lineno bool) string
 	Delete(addr Address)
 	Insert(line string)
-	Move(n int) error
+	Move(addr Address) error
 	Select(addr Address, showlns bool) []string
 }
 
@@ -77,7 +77,15 @@ func (b *buffer) Insert(line string) {
 	b.lines = append(b.lines[:(b.index-1)], append([]string{line}, b.lines[(b.index-1):]...)...)
 }
 
-func (b *buffer) Move(n int) error {
+func (b *buffer) Move(addr Address) error {
+	var n int
+
+	if addr.Start() == 0 {
+		n = b.index
+	} else {
+		n = addr.Start()
+	}
+
 	// cmdMove won't call us anyway as it checks for an empty buffer and the
 	// special case 0th index (also representing an empty buffer)
 	if n == 0 && len(b.lines) == 0 {
