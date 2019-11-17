@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"fmt"
 	"io"
 	"log"
 	"strings"
@@ -69,6 +70,7 @@ func (e *editor) ReadFrom(r io.Reader) (n int64, err error) {
 		log.Printf("error reading from reader: %s", err)
 		return
 	}
+	fmt.Printf("%d\n", n)
 	return
 }
 

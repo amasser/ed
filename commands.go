@@ -100,11 +100,13 @@ func cmdWrite(e Editor, buf Buffer, cmd Command) error {
 	}
 	defer f.Close()
 
-	_, err = io.Copy(f, buf)
+	n, err := io.Copy(f, buf)
 	if err != nil {
 		log.Printf("rror writing to output file: %s", err)
 		return err
 	}
+
+	fmt.Printf("%d\n", n)
 
 	return nil
 }
