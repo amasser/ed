@@ -83,9 +83,24 @@ func (b *buffer) Select(addr Address, showlns bool) []string {
 		return []string{b.lines[(b.index - 1)]}
 	}
 
-	var lines []string
+	var (
+		start, end int
+		lines      []string
+	)
 
-	for i := addr.Start(); i <= addr.End(); i++ {
+	// XXX: Generalize this
+	if addr.End() == 0 {
+		start, end = addr.Start(), addr.Start()
+	} else {
+		start = addr.Start()
+		if addr.End() == -1 {
+			end = len(b.lines)
+		} else {
+			end = addr.End()
+		}
+	}
+
+	for i := start; i <= end; i++ {
 		if showlns {
 			lines = append(lines, fmt.Sprintf("%d\t%s", i, b.lines[(i-1)]))
 		} else {

@@ -44,7 +44,7 @@ func (a address) String() string {
 		end = fmt.Sprintf("%d", a.end)
 	}
 
-	return fmt.Sprintf("%s%s", start, end)
+	return fmt.Sprintf("%s,%s", start, end)
 }
 
 func (a address) Start() int {
