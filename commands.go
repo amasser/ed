@@ -93,7 +93,7 @@ func cmdWrite(e Editor, buf Buffer, cmd Command) error {
 		e.SetFilename(filename)
 	}
 
-	f, err := os.OpenFile(filename, os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0644)
+	f, err := os.OpenFile(filename, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0644)
 	if err != nil {
 		log.Printf("error opening file for writing: %s", err)
 		return err
