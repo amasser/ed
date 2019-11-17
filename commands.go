@@ -14,12 +14,12 @@ func cmdAppend(e Editor, buf Buffer, cmd Command) error {
 }
 
 func cmdDelete(e Editor, buf Buffer, cmd Command) error {
-	buf.Delete(cmd.Addr().Start(), cmd.Addr().End())
+	buf.Delete(cmd.Addr())
 	return nil
 }
 
 func cmdChange(e Editor, buf Buffer, cmd Command) error {
-	buf.Delete(cmd.Addr().Start(), cmd.Addr().End())
+	buf.Delete(cmd.Addr())
 	e.SetMode(modeAppend)
 	e.SetPrompt("")
 	return nil

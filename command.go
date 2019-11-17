@@ -84,7 +84,9 @@ func parseCommand(line string) (cmd command, err error) {
 		}
 	}
 
-	if result["end"] == "$" || result["end"] == "" {
+	if result["end"] == "" {
+		end = 0
+	} else if result["end"] == "$" {
 		end = -1
 	} else {
 		if end, err = strconv.Atoi(result["end"]); err != nil {

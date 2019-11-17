@@ -25,7 +25,7 @@ func (a address) IsValid(size int) bool {
 }
 
 func (a address) IsUnspecified() bool {
-	return a.start == 0 && a.end == -1
+	return a.start == 0 && a.end == 0
 }
 
 func (a address) String() string {

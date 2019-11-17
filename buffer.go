@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"io"
-	"log"
 )
 
 // Buffer ...
@@ -13,7 +12,7 @@ type Buffer interface {
 
 	Append(line string)
 	Current(lineno bool) string
-	Delete(start, end int)
+	Delete(addr Address)
 	Insert(line string)
 	Move(n int) error
 	Select(addr Address, showlns bool) []string
@@ -37,13 +36,26 @@ func (b *buffer) Current(lineno bool) string {
 	return b.lines[(b.index - 1)]
 }
 
-func (b *buffer) Delete(start, end int) {
-	if start == 0 && end == -1 {
+func (b *buffer) Delete(addr Address) {
+	var start, end int
+
+	if addr.IsUnspecified() {
 		start, end = b.index, b.index
 		b.lines = append(b.lines[:(start-1)], b.lines[end:]...)
 		b.index--
 	} else {
-		log.Printf("deleting from %d to %d", start, end)
+		if addr.End() == 0 {
+			start, end = addr.Start(), addr.Start()
+		} else {
+			start = addr.Start()
+			if addr.End() == -1 {
+				end = len(b.lines)
+			} else {
+				end = addr.End()
+			}
+		}
+		b.lines = append(b.lines[:(start-1)], b.lines[end:]...)
+		b.index -= (end - start) + 1
 	}
 }
 
