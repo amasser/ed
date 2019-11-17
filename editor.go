@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"io"
 	"log"
 	"strings"
@@ -10,6 +11,9 @@ import (
 
 // Editor ...
 type Editor interface {
+	io.Writer
+	io.ReaderFrom
+
 	Stop()
 	Run() error
 	SetMode(mode int)
@@ -44,6 +48,24 @@ func newEditor() (Editor, error) {
 	}
 
 	return e, nil
+}
+
+func (e *editor) Write(p []byte) (n int, err error) {
+	return
+}
+
+func (e *editor) ReadFrom(r io.Reader) (n int64, err error) {
+	scanner := bufio.NewScanner(r)
+	for scanner.Scan() {
+		line := scanner.Text()
+		e.buffer.Append(line)
+		n += int64(len(line) + 1)
+	}
+	if err = scanner.Err(); err != nil {
+		log.Printf("error reading from reader: %s", err)
+		return
+	}
+	return
 }
 
 func (e *editor) SetMode(mode int) {
