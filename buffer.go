@@ -10,18 +10,28 @@ type Buffer interface {
 	io.Reader
 	io.WriterTo
 
+	Index() int
+	Size() int
+
 	Append(line string)
 	Current(lineno bool) string
 	Delete(addr Address)
 	Insert(line string)
 	Move(n int) error
 	Select(addr Address, showlns bool) []string
-	Size() int
 }
 
 type buffer struct {
 	index int
 	lines []string
+}
+
+func (b *buffer) Index() int {
+	return b.index
+}
+
+func (b *buffer) Size() int {
+	return len(b.lines)
 }
 
 func (b *buffer) Append(line string) {
@@ -30,6 +40,10 @@ func (b *buffer) Append(line string) {
 }
 
 func (b *buffer) Current(lineno bool) string {
+	if len(b.lines) == 0 {
+		return ""
+	}
+
 	if lineno {
 		return fmt.Sprintf("%d\t%s", b.index, b.lines[(b.index-1)])
 	}
@@ -64,6 +78,11 @@ func (b *buffer) Insert(line string) {
 }
 
 func (b *buffer) Move(n int) error {
+	// cmdMove won't call us anyway as it checks for an empty buffer and the
+	// special case 0th index (also representing an empty buffer)
+	if n == 0 && len(b.lines) == 0 {
+		return nil
+	}
 	if n < 1 || n > len(b.lines) {
 		return errAddressOutOfRange
 	}
@@ -109,10 +128,6 @@ func (b *buffer) Select(addr Address, showlns bool) []string {
 	}
 
 	return lines
-}
-
-func (b *buffer) Size() int {
-	return len(b.lines)
 }
 
 func (b *buffer) Read(p []byte) (n int, err error) {

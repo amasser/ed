@@ -32,7 +32,19 @@ func cmdInsert(e Editor, buf Buffer, cmd Command) error {
 }
 
 func cmdMove(e Editor, buf Buffer, cmd Command) error {
-	err := buf.Move(cmd.Addr().Start())
+	var n int
+
+	if cmd.Addr().Start() == 0 {
+		n = buf.Index()
+	} else {
+		n = cmd.Addr().Start()
+	}
+
+	if n == 0 && buf.Size() == 0 {
+		return nil
+	}
+
+	err := buf.Move(n)
 	if err != nil {
 		log.Printf("error moving to line %d: %s", cmd.Addr().Start(), err)
 		return err
