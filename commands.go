@@ -43,12 +43,16 @@ func cmdMove(e Editor, buf Buffer, cmd Command) error {
 }
 
 func cmdNumber(e Editor, buf Buffer, cmd Command) error {
-	fmt.Println(buf.Current(true))
+	for _, line := range buf.Select(cmd.Addr(), true) {
+		fmt.Println(line)
+	}
 	return nil
 }
 
 func cmdPrint(e Editor, buf Buffer, cmd Command) error {
-	fmt.Println(buf.Current(false))
+	for _, line := range buf.Select(cmd.Addr(), false) {
+		fmt.Println(line)
+	}
 	return nil
 }
 

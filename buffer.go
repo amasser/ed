@@ -12,10 +12,12 @@ type Buffer interface {
 	io.WriterTo
 
 	Append(line string)
+	Current(lineno bool) string
 	Delete(start, end int)
 	Insert(line string)
 	Move(n int) error
-	Current(lineno bool) string
+	Select(addr Address, showlns bool) []string
+	Size() int
 }
 
 type buffer struct {
@@ -26,6 +28,13 @@ type buffer struct {
 func (b *buffer) Append(line string) {
 	b.lines = append(b.lines[:b.index], append([]string{line}, b.lines[b.index:]...)...)
 	b.index++
+}
+
+func (b *buffer) Current(lineno bool) string {
+	if lineno {
+		return fmt.Sprintf("%d\t%s", b.index, b.lines[(b.index-1)])
+	}
+	return b.lines[(b.index - 1)]
 }
 
 func (b *buffer) Delete(start, end int) {
@@ -50,11 +59,29 @@ func (b *buffer) Move(n int) error {
 	return nil
 }
 
-func (b *buffer) Current(lineno bool) string {
-	if lineno {
-		return fmt.Sprintf("%d\t%s", b.index, b.lines[(b.index-1)])
+func (b *buffer) Select(addr Address, showlns bool) []string {
+	if addr.IsUnspecified() {
+		if showlns {
+			return []string{fmt.Sprintf("%d\t%s", b.index, b.lines[(b.index-1)])}
+		}
+		return []string{b.lines[(b.index - 1)]}
 	}
-	return b.lines[(b.index - 1)]
+
+	var lines []string
+
+	for i := addr.Start(); i <= addr.End(); i++ {
+		if showlns {
+			lines = append(lines, fmt.Sprintf("%d\t%s", i, b.lines[(i-1)]))
+		} else {
+			lines = append(lines, b.lines[(i-1)])
+		}
+	}
+
+	return lines
+}
+
+func (b *buffer) Size() int {
+	return len(b.lines)
 }
 
 func (b *buffer) Read(p []byte) (n int, err error) {

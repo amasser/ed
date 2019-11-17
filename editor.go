@@ -1,17 +1,11 @@
 package main
 
 import (
-	"errors"
 	"io"
 	"log"
 	"strings"
 
 	"github.com/chzyer/readline"
-)
-
-var (
-	errInvalidCommand    = errors.New("error: invalid command")
-	errAddressOutOfRange = errors.New("error: address out of range")
 )
 
 // Editor ...
@@ -89,6 +83,11 @@ func (e *editor) Run() error {
 			cmd, err := parseCommand(line)
 			if err != nil {
 				log.Printf("error parsing command: %s", err)
+				continue
+			}
+
+			if err := cmd.Validate(e.buffer.Size()); err != nil {
+				log.Printf("error validating command: %s", err)
 				continue
 			}
 

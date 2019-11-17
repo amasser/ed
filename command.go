@@ -17,6 +17,8 @@ var (
 type Command interface {
 	fmt.Stringer
 
+	Validate(bufsize int) error
+
 	Addr() Address
 	Arg(i int) string
 	Cmd() string
@@ -31,6 +33,13 @@ type command struct {
 func (c command) String() string {
 	args := strings.Join(c.args, " ")
 	return fmt.Sprintf("%s%s %s", c.addr.String(), c.cmd, args)
+}
+
+func (c command) Validate(bufsize int) error {
+	if !c.addr.IsValid(bufsize) {
+		return errAddressOutOfRange
+	}
+	return nil
 }
 
 func (c command) Addr() Address {

@@ -8,6 +8,9 @@ import (
 type Address interface {
 	fmt.Stringer
 
+	IsValid(size int) bool
+	IsUnspecified() bool
+
 	Start() int
 	End() int
 }
@@ -15,6 +18,14 @@ type Address interface {
 type address struct {
 	start int
 	end   int
+}
+
+func (a address) IsValid(size int) bool {
+	return a.IsUnspecified() || (a.start > 0 && a.end <= size)
+}
+
+func (a address) IsUnspecified() bool {
+	return a.start == 0 && a.end == -1
 }
 
 func (a address) String() string {
