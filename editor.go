@@ -109,10 +109,17 @@ func (e *editor) Run() error {
 	for e.running {
 		line, err := e.rl.Readline()
 		if err != nil { // io.EOF
-			if err == io.EOF {
-				return nil
+			if err == readline.ErrInterrupt {
+				fmt.Println("^C")
+				e.mode = modeCommand
+				e.rl.SetPrompt("> ")
+				continue
+			} else if err == io.EOF {
+				e.Stop()
+				continue
+			} else {
+				return err
 			}
-			return err
 		}
 
 		if e.mode == modeCommand {
