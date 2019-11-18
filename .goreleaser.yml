@@ -1,6 +1,7 @@
 builds:
   - 
     flags: -tags "static_build"
+    ldflags: -w -X github.com/prologic/ed/.Version={{.Version}} -X github.com/prologic/ed/.Commit={{.Commit}}
     env:
       - CGO_ENABLED=0
     goos:
