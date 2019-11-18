@@ -53,6 +53,7 @@ func main() {
 	e.Handle("a", cmdAppend)
 	e.Handle("c", cmdChange)
 	e.Handle("d", cmdDelete)
+	e.Handle("e", cmdEdit)
 	e.Handle("f", cmdFile)
 	e.Handle("i", cmdInsert)
 	e.Handle("j", cmdJoin)

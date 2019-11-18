@@ -16,16 +16,21 @@ func cmdAppend(e Editor, buf Buffer, cmd Command) error {
 	return nil
 }
 
-func cmdDelete(e Editor, buf Buffer, cmd Command) error {
-	buf.Delete(cmd.Addr())
-	return nil
-}
-
 func cmdChange(e Editor, buf Buffer, cmd Command) error {
 	buf.Delete(cmd.Addr())
 	e.SetMode(modeInsert)
 	e.SetPrompt("")
 	return nil
+}
+
+func cmdDelete(e Editor, buf Buffer, cmd Command) error {
+	buf.Delete(cmd.Addr())
+	return nil
+}
+
+func cmdEdit(e Editor, buf Buffer, cmd Command) error {
+	buf.Clear()
+	return cmdRead(e, buf, cmd)
 }
 
 func cmdFile(e Editor, buf Buffer, cmd Command) error {

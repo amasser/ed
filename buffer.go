@@ -18,6 +18,7 @@ type Buffer interface {
 	Index() int
 	Size() int
 
+	Clear()
 	Append(line string)
 	Current(lineno bool) string
 	Delete(addr Address)
@@ -29,6 +30,11 @@ type Buffer interface {
 type buffer struct {
 	index int
 	lines []string
+}
+
+func (b *buffer) Clear() {
+	b.lines = make([]string, 0)
+	b.index = 0
 }
 
 func (b *buffer) Index() int {
