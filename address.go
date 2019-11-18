@@ -73,6 +73,10 @@ func (a *address) Resolve(buf Buffer) error {
 		}
 	}
 
+	if a._start > 0 && a.delim == "" && a.end == "" {
+		a._end = a._start
+	}
+
 	a.start, a.end = string(a._start), string(a._end)
 
 	return nil
