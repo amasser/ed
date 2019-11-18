@@ -68,6 +68,16 @@ I decided I like this line better.
 >
 ```
 
+## Commands
+
+This implementation supports the following commands:
+(_not all commands from the original `ed` are supported nor the GNU `ed`_)
+
+	| Command  | Description | Notes           |
+	| -------- | ----------- | --------------- |
+	| `a`      | append text | Appends text to the buffer after the addressed line. Text is entered in input mode. The current address is set to the address of the last line entered or, if there were none, to the addressed line. |
+	| `c`      | change text | Changes lines in the buffer. The addressed lines are deleted from the buffer, and text is inserted in their place. Text is entered in input mode. The current address is set to the address of the last line entered or, if there were none, to the new address of the line after the last line deleted; if the lines deleted were originally at the end of the buffer, the current address is set to the address of the new last line; if no lines remain in the buffer, the current address is set to zero. |
+
 ## License
 
-`ed` is licensed under the terms of the [MIT License](https://opensource.org/licenses/MIT)
+	`ed` is licensed under the terms of the [MIT License](https://opensource.org/licenses/MIT)
