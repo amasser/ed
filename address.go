@@ -13,6 +13,7 @@ type Address interface {
 
 	IsUnspecified() bool
 	Resolve(buf Buffer) error
+	Size() int
 	Start() int
 	End() int
 }
@@ -80,6 +81,10 @@ func (a *address) Resolve(buf Buffer) error {
 	a.start, a.end = string(a._start), string(a._end)
 
 	return nil
+}
+
+func (a *address) Size() int {
+	return (a._end - a._start) + 1
 }
 
 func (a *address) Start() int {

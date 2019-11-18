@@ -18,8 +18,14 @@ func cmdAppend(e Editor, buf Buffer, cmd Command) error {
 }
 
 func cmdChange(e Editor, buf Buffer, cmd Command) error {
-	buf.Delete(cmd.Addr())
-	e.SetMode(modeInsert)
+	if cmd.Addr().IsUnspecified() && buf.Index() == buf.Size() {
+		buf.Delete(cmd.Addr())
+		e.SetMode(modeAppend)
+	} else {
+		buf.Delete(cmd.Addr())
+		e.SetMode(modeInsert)
+	}
+
 	e.SetPrompt("")
 	return nil
 }
