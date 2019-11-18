@@ -117,7 +117,7 @@ func (b *buffer) Select(addr Address, showlns bool) []string {
 
 	if addr.IsUnspecified() {
 		if showlns {
-			return []string{fmt.Sprintf("%d\t%s", b.index, b.lines[(b.index-1)])}
+			return []string{fmt.Sprintf("%04d  %s", b.index, b.lines[(b.index-1)])}
 		}
 		return []string{b.lines[(b.index - 1)]}
 	}
@@ -141,7 +141,7 @@ func (b *buffer) Select(addr Address, showlns bool) []string {
 
 	for i := start; i <= end; i++ {
 		if showlns {
-			lines = append(lines, fmt.Sprintf("%d\t%s", i, b.lines[(i-1)]))
+			lines = append(lines, fmt.Sprintf("%04d  %s", i, b.lines[(i-1)]))
 		} else {
 			lines = append(lines, b.lines[(i-1)])
 		}

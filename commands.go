@@ -6,6 +6,7 @@ import (
 	"os"
 	"strings"
 
+	syntax "github.com/alecthomas/chroma/quick"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -67,15 +68,24 @@ func cmdMove(e Editor, buf Buffer, cmd Command) error {
 }
 
 func cmdNumber(e Editor, buf Buffer, cmd Command) error {
-	for _, line := range buf.Select(cmd.Addr(), true) {
-		fmt.Println(line)
+	selection := buf.Select(cmd.Addr(), true)
+	source := strings.Join(selection, "\n")
+	err := syntax.Highlight(os.Stdout, source, "go", "terminal16m", "vim")
+	if err != nil {
+		log.WithError(err).Error("error syntax highlighting selection")
+		return err
 	}
 	return nil
+
 }
 
 func cmdPrint(e Editor, buf Buffer, cmd Command) error {
-	for _, line := range buf.Select(cmd.Addr(), false) {
-		fmt.Println(line)
+	selection := buf.Select(cmd.Addr(), false)
+	source := strings.Join(selection, "\n")
+	err := syntax.Highlight(os.Stdout, source, "go", "terminal16m", "vim")
+	if err != nil {
+		log.WithError(err).Error("error syntax highlighting selection")
+		return err
 	}
 	return nil
 }
