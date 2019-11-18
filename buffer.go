@@ -94,8 +94,6 @@ func (b *buffer) Delete(addr Address) {
 
 	if addr.IsUnspecified() {
 		start, end = b.index, b.index
-		b.lines = append(b.lines[:(start-1)], b.lines[end:]...)
-		b.index--
 	} else {
 		if addr.End() == 0 {
 			start, end = addr.Start(), addr.Start()
@@ -107,14 +105,17 @@ func (b *buffer) Delete(addr Address) {
 				end = addr.End()
 			}
 		}
+	}
 
-		b.lines = append(b.lines[:(start-1)], b.lines[end:]...)
+	b.lines = append(b.lines[:(start-1)], b.lines[end:]...)
 
-		if len(b.lines) == 0 {
-			b.index = 0
-		} else {
-			b.index = end - (end - start)
-		}
+	if len(b.lines) == 0 {
+		b.index = 0
+	} else {
+		b.index = end - (end - start)
+	}
+	if b.index > len(b.lines) {
+		b.index = len(b.lines)
 	}
 }
 
