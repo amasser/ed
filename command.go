@@ -8,7 +8,7 @@ import (
 
 var (
 	cmdRegex = regexp.MustCompile(
-		`(?P<start>[0-9]+|\.)?((?P<delim>,|;)(?P<end>[0-9]+|\$)?)?(?P<command>[a-zA-Z=]*)(?P<arguments>.*)$`,
+		`(?P<start>[0-9]+|\.)?((?P<delim>,|;)(?P<end>[0-9]+|\$)?)?(?P<command>[a-zA-Z=/]*)(?P<arguments>.*)$`,
 	)
 )
 

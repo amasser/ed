@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"regexp"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -17,12 +18,15 @@ type Buffer interface {
 
 	Index() int
 	Size() int
-
 	Clear()
+
 	Append(line string)
-	Current(lineno bool) string
-	Delete(addr Address)
 	Insert(line string)
+
+	Current(lineno bool) string
+	Search(re *regexp.Regexp) bool
+
+	Delete(addr Address)
 	Move(addr Address) error
 	Select(addr Address, showlns bool) []string
 }
@@ -59,6 +63,30 @@ func (b *buffer) Current(lineno bool) string {
 		return fmt.Sprintf("%d\t%s", b.index, b.lines[(b.index-1)])
 	}
 	return b.lines[(b.index - 1)]
+}
+
+func (b *buffer) Search(re *regexp.Regexp) bool {
+	if len(b.lines) == 0 {
+		return false
+	}
+
+	for i := (b.index + 1); i <= len(b.lines); i++ {
+		line := b.lines[(i - 1)]
+		if re.MatchString(line) {
+			b.index = i
+			return true
+		}
+	}
+
+	for i := 1; i <= b.index; i++ {
+		line := b.lines[(i - 1)]
+		if re.MatchString(line) {
+			b.index = i
+			return true
+		}
+	}
+
+	return false
 }
 
 func (b *buffer) Delete(addr Address) {

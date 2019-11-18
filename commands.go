@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"regexp"
 	"strings"
 
 	syntax "github.com/alecthomas/chroma/quick"
@@ -143,6 +144,32 @@ func cmdRead(e Editor, buf Buffer, cmd Command) error {
 
 	fmt.Printf("%d\n", n)
 
+	return nil
+}
+
+func cmdSearch(e Editor, buf Buffer, cmd Command) error {
+	expr := cmd.Arg(0)
+	if expr != "" {
+		re, err := regexp.Compile(expr)
+		if err != nil {
+			log.Errorf("error parsing expression: %s", err)
+			return err
+		}
+
+		e.SetRegexp(re)
+	}
+
+	re := e.Regexp()
+
+	if re == nil {
+		log.Error("error no search expression specified or previously set")
+		return errNoExpressionSpecified
+	}
+
+	ok := buf.Search(re)
+	if ok {
+		fmt.Println(buf.Current(false))
+	}
 	return nil
 }
 

@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"regexp"
 	"strings"
 
 	"github.com/chzyer/readline"
@@ -17,6 +18,8 @@ type Editor interface {
 
 	Stop()
 	Run() error
+	Regexp() *regexp.Regexp
+	SetRegexp(re *regexp.Regexp)
 	Clipboard() []string
 	SetClipboard(lines []string)
 	Filename() string
@@ -33,6 +36,7 @@ type editor struct {
 	buffer    Buffer
 	filename  string
 	clipboard []string
+	regexp    *regexp.Regexp
 	handlers  map[string]Handler
 }
 
@@ -76,6 +80,14 @@ func (e *editor) ReadFrom(r io.Reader) (n int64, err error) {
 	}
 	fmt.Printf("%d\n", n)
 	return
+}
+
+func (e *editor) Regexp() *regexp.Regexp {
+	return e.regexp
+}
+
+func (e *editor) SetRegexp(re *regexp.Regexp) {
+	e.regexp = re
 }
 
 func (e *editor) Clipboard() []string {
