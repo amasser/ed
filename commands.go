@@ -87,7 +87,7 @@ func cmdMove(e Editor, buf Buffer, cmd Command) error {
 func cmdNumber(e Editor, buf Buffer, cmd Command) error {
 	selection := buf.Select(cmd.Addr(), true)
 	source := strings.Join(selection, "\n") + "\n"
-	err := syntax.Highlight(os.Stdout, source, "go", "terminal16m", "vim")
+	err := syntax.Highlight(os.Stdout, source, "", "terminal16m", "vim")
 	if err != nil {
 		log.WithError(err).Error("error syntax highlighting selection")
 		return err
@@ -169,22 +169,22 @@ func cmdRead(e Editor, buf Buffer, cmd Command) error {
 }
 
 func cmdShell(e Editor, buf Buffer, cmd Command) error {
-  command := cmd.Arg(0)
-  if command == "" {
-    log.Error("error no command specified")
-    return errNoCommandSpecified
-  }
+	command := cmd.Arg(0)
+	if command == "" {
+		log.Error("error no command specified")
+		return errNoCommandSpecified
+	}
 
-  res, err := execShell("", command)
-  if err != nil {
-    log.Errorf("error executing command %s: %s", command, err)
-    return err
-  }
+	res, err := execShell("", command)
+	if err != nil {
+		log.Errorf("error executing command %s: %s", command, err)
+		return err
+	}
 
-fmt.Println(string(res.Output))
-fmt.Println("!")
+	fmt.Println(string(res.Output))
+	fmt.Println("!")
 
-  return nil
+	return nil
 }
 
 func cmdSearch(e Editor, buf Buffer, cmd Command) error {
