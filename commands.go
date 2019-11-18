@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strings"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -37,6 +38,13 @@ func cmdFile(e Editor, buf Buffer, cmd Command) error {
 func cmdInsert(e Editor, buf Buffer, cmd Command) error {
 	e.SetMode(modeInsert)
 	e.SetPrompt("")
+	return nil
+}
+
+func cmdJoin(e Editor, buf Buffer, cmd Command) error {
+	lines := buf.Select(cmd.Addr(), false)
+	buf.Delete(cmd.Addr())
+	buf.Append(strings.Join(lines, ""))
 	return nil
 }
 
