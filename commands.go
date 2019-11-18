@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bufio"
+	"bytes"
 	"fmt"
 	"io"
 	"os"
@@ -60,7 +62,7 @@ func cmdInsert(e Editor, buf Buffer, cmd Command) error {
 }
 
 func cmdJoin(e Editor, buf Buffer, cmd Command) error {
-	lines := buf.Select(cmd.Addr(), false)
+	lines := buf.Select(cmd.Addr())
 	buf.Delete(cmd.Addr())
 	buf.Append(strings.Join(lines, ""))
 	return nil
@@ -79,25 +81,42 @@ func cmdMove(e Editor, buf Buffer, cmd Command) error {
 		log.Errorf("error moving to line %d: %s", cmd.Addr().Start(), err)
 		return err
 	}
-	fmt.Println(buf.Current(false))
+	fmt.Println(buf.Current())
 
 	return nil
 }
 
 func cmdNumber(e Editor, buf Buffer, cmd Command) error {
-	selection := buf.Select(cmd.Addr(), true)
+	selection := buf.Select(cmd.Addr())
+
+	out := &bytes.Buffer{}
 	source := strings.Join(selection, "\n") + "\n"
-	err := syntax.Highlight(os.Stdout, source, "", "terminal16m", "vim")
+	err := syntax.Highlight(out, source, "", "terminal16m", "vim")
 	if err != nil {
 		log.WithError(err).Error("error syntax highlighting selection")
 		return err
 	}
-	return nil
 
+	ln := cmd.Addr().Start()
+	scanner := bufio.NewScanner(bytes.NewBuffer(out.Bytes()))
+	for scanner.Scan() {
+		if ln == buf.Index() {
+			fmt.Printf("%4d*  %s\n", ln, scanner.Text())
+		} else {
+			fmt.Printf("%4d  %s\n", ln, scanner.Text())
+		}
+		ln++
+	}
+	if err := scanner.Err(); err != nil {
+		log.Errorf("error printing lines: %s", err)
+		return err
+	}
+
+	return nil
 }
 
 func cmdPrint(e Editor, buf Buffer, cmd Command) error {
-	selection := buf.Select(cmd.Addr(), false)
+	selection := buf.Select(cmd.Addr())
 	source := strings.Join(selection, "\n") + "\n"
 	err := syntax.Highlight(os.Stdout, source, "go", "terminal16m", "vim")
 	if err != nil {
@@ -208,7 +227,7 @@ func cmdSearch(e Editor, buf Buffer, cmd Command) error {
 
 	ok := buf.Search(re)
 	if ok {
-		fmt.Println(buf.Current(false))
+		fmt.Println(buf.Current())
 	}
 	return nil
 }
@@ -255,6 +274,6 @@ func cmdWriteQuit(e Editor, buf Buffer, cmd Command) error {
 }
 
 func cmdYank(e Editor, buf Buffer, cmd Command) error {
-	e.SetClipboard(buf.Select(cmd.Addr(), false))
+	e.SetClipboard(buf.Select(cmd.Addr()))
 	return nil
 }

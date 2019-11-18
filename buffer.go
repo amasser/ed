@@ -2,7 +2,6 @@ package main
 
 import (
 	"bufio"
-	"fmt"
 	"io"
 	"regexp"
 
@@ -23,12 +22,12 @@ type Buffer interface {
 	Append(line string)
 	Insert(line string)
 
-	Current(lineno bool) string
+	Current() string
 	Search(re *regexp.Regexp) bool
 
 	Delete(addr Address)
 	Move(addr Address) error
-	Select(addr Address, showlns bool) []string
+	Select(addr Address) []string
 }
 
 type buffer struct {
@@ -54,14 +53,11 @@ func (b *buffer) Append(line string) {
 	b.index++
 }
 
-func (b *buffer) Current(lineno bool) string {
+func (b *buffer) Current() string {
 	if len(b.lines) == 0 {
 		return ""
 	}
 
-	if lineno {
-		return fmt.Sprintf("%d\t%s", b.index, b.lines[(b.index-1)])
-	}
 	return b.lines[(b.index - 1)]
 }
 
@@ -145,31 +141,19 @@ func (b *buffer) Move(addr Address) error {
 	return nil
 }
 
-func (b *buffer) Select(addr Address, showlns bool) []string {
+func (b *buffer) Select(addr Address) []string {
 	if len(b.lines) == 0 {
 		return nil
 	}
 
 	if addr.IsUnspecified() {
-		if showlns {
-			return []string{fmt.Sprintf("%4d  %s", b.index, b.lines[(b.index-1)])}
-		}
 		return []string{b.lines[(b.index - 1)]}
 	}
 
 	var lines []string
 
 	for i := addr.Start(); i <= addr.End(); i++ {
-		line := b.lines[(i - 1)]
-		if showlns {
-			if i == b.index {
-				lines = append(lines, fmt.Sprintf("%4d*  %s", i, line))
-			} else {
-				lines = append(lines, fmt.Sprintf("%4d   %s", i, line))
-			}
-		} else {
-			lines = append(lines, line)
-		}
+		lines = append(lines, b.lines[(i-1)])
 	}
 
 	return lines
