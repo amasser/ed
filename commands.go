@@ -95,6 +95,13 @@ func cmdPrint(e Editor, buf Buffer, cmd Command) error {
 	return nil
 }
 
+func cmdPut(e Editor, buf Buffer, cmd Command) error {
+	for _, line := range e.Clipboard() {
+		buf.Append(line)
+	}
+	return nil
+}
+
 func cmdQuit(e Editor, buf Buffer, cmd Command) error {
 	e.Stop()
 	return nil
@@ -173,4 +180,9 @@ func cmdWriteQuit(e Editor, buf Buffer, cmd Command) error {
 		return err
 	}
 	return cmdQuit(e, buf, cmd)
+}
+
+func cmdYank(e Editor, buf Buffer, cmd Command) error {
+	e.SetClipboard(buf.Select(cmd.Addr(), false))
+	return nil
 }

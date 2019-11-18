@@ -62,6 +62,8 @@ func main() {
 	e.Handle("r", cmdRead)
 	e.Handle("w", cmdWrite)
 	e.Handle("wq", cmdWriteQuit)
+	e.Handle("x", cmdPut)
+	e.Handle("y", cmdYank)
 
 	if len(flag.Args()) == 1 {
 		filename := flag.Arg(0)

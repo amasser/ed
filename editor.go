@@ -17,6 +17,8 @@ type Editor interface {
 
 	Stop()
 	Run() error
+	Clipboard() []string
+	SetClipboard(lines []string)
 	Filename() string
 	SetFilename(filename string)
 	SetMode(mode int)
@@ -25,12 +27,13 @@ type Editor interface {
 }
 
 type editor struct {
-	rl       *readline.Instance
-	mode     int
-	running  bool
-	buffer   Buffer
-	filename string
-	handlers map[string]Handler
+	rl        *readline.Instance
+	mode      int
+	running   bool
+	buffer    Buffer
+	filename  string
+	clipboard []string
+	handlers  map[string]Handler
 }
 
 func newEditor() (Editor, error) {
@@ -73,6 +76,14 @@ func (e *editor) ReadFrom(r io.Reader) (n int64, err error) {
 	}
 	fmt.Printf("%d\n", n)
 	return
+}
+
+func (e *editor) Clipboard() []string {
+	return e.clipboard
+}
+
+func (e *editor) SetClipboard(lines []string) {
+	e.clipboard = lines[:]
 }
 
 func (e *editor) Filename() string {
