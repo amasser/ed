@@ -168,6 +168,25 @@ func cmdRead(e Editor, buf Buffer, cmd Command) error {
 	return nil
 }
 
+func cmdShell(e Editor, buf Buffer, cmd Command) error {
+  command := cmd.Arg(0)
+  if command == "" {
+    log.Error("error no command specified")
+    return errNoCommandSpecified
+  }
+
+  res, err := execShell("", command)
+  if err != nil {
+    log.Errorf("error executing command %s: %s", command, err)
+    return err
+  }
+
+fmt.Println(string(res.Output))
+fmt.Println("!")
+
+  return nil
+}
+
 func cmdSearch(e Editor, buf Buffer, cmd Command) error {
 	expr := cmd.Arg(0)
 	if expr != "" {

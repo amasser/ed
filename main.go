@@ -49,6 +49,7 @@ func main() {
 	}
 
 	e.Handle("", cmdMove)
+	e.Handle("!", cmdShell)
 	e.Handle("=", cmdIndex)
 	e.Handle("/", cmdSearch)
 	e.Handle("a", cmdAppend)

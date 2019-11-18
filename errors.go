@@ -7,4 +7,5 @@ var (
 	errAddressOutOfRange     = errors.New("error: address out of range")
 	errNoFileSpecified       = errors.New("error: no filename specified")
 	errNoExpressionSpecified = errors.New("error: no expression specified")
+    errNoCommandSpecified = errors.New("error: no command specified")
 )
