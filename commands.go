@@ -36,6 +36,11 @@ func cmdFile(e Editor, buf Buffer, cmd Command) error {
 	return nil
 }
 
+func cmdIndex(e Editor, buf Buffer, cmd Command) error {
+	fmt.Printf("%d\n", buf.Index())
+	return nil
+}
+
 func cmdInsert(e Editor, buf Buffer, cmd Command) error {
 	e.SetMode(modeInsert)
 	e.SetPrompt("")
