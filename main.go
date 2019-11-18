@@ -58,6 +58,7 @@ func main() {
 	e.Handle("n", cmdNumber)
 	e.Handle("p", cmdPrint)
 	e.Handle("q", cmdQuit)
+	e.Handle("r", cmdRead)
 	e.Handle("w", cmdWrite)
 	e.Handle("wq", cmdWriteQuit)
 

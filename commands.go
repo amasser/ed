@@ -85,6 +85,40 @@ func cmdQuit(e Editor, buf Buffer, cmd Command) error {
 	return nil
 }
 
+func cmdRead(e Editor, buf Buffer, cmd Command) error {
+	filename := cmd.Arg(0)
+	if filename == "" {
+		filename = e.Filename()
+	}
+
+	if filename == "" {
+		err := errNoFileSpecified
+		log.WithError(err).Error("error must specify a filename or set a default filename")
+		return err
+	}
+
+	if e.Filename() == "" {
+		e.SetFilename(filename)
+	}
+
+	f, err := os.Open(filename)
+	if err != nil {
+		log.Printf("error opening file for reading: %s", err)
+		return err
+	}
+	defer f.Close()
+
+	n, err := io.Copy(buf, f)
+	if err != nil {
+		log.Printf("rror reading from input file: %s", err)
+		return err
+	}
+
+	fmt.Printf("%d\n", n)
+
+	return nil
+}
+
 func cmdWrite(e Editor, buf Buffer, cmd Command) error {
 	filename := cmd.Arg(0)
 	if filename == "" {

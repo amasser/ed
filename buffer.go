@@ -1,13 +1,18 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"io"
+
+	log "github.com/sirupsen/logrus"
 )
 
 // Buffer ...
 type Buffer interface {
 	io.Reader
+	io.Writer
+	io.ReaderFrom
 	io.WriterTo
 
 	Index() int
@@ -146,6 +151,24 @@ func (b *buffer) Select(addr Address, showlns bool) []string {
 }
 
 func (b *buffer) Read(p []byte) (n int, err error) {
+	return
+}
+
+func (b *buffer) Write(p []byte) (n int, err error) {
+	return
+}
+
+func (b *buffer) ReadFrom(r io.Reader) (n int64, err error) {
+	scanner := bufio.NewScanner(r)
+	for scanner.Scan() {
+		line := scanner.Text()
+		b.Append(line)
+		n += int64(len(line) + 1)
+	}
+	if err = scanner.Err(); err != nil {
+		log.Printf("error reading from reader: %s", err)
+		return
+	}
 	return
 }
 
