@@ -131,18 +131,33 @@ func cmdRead(e Editor, buf Buffer, cmd Command) error {
 		return err
 	}
 
-	if e.Filename() == "" {
+	if e.Filename() == "" && !strings.HasPrefix(filename, "!") {
 		e.SetFilename(filename)
 	}
 
-	f, err := os.Open(filename)
-	if err != nil {
-		log.Errorf("error opening file for reading: %s", err)
-		return err
-	}
-	defer f.Close()
+	var (
+		r   io.ReadCloser
+		err error
+	)
 
-	n, err := io.Copy(buf, f)
+	if strings.HasPrefix(filename, "!") {
+		command := filename[1:]
+		r, err = execShell("", command)
+		if err != nil {
+			log.Errorf("error running shell command %s: %s", command, err)
+			return err
+		}
+	} else {
+		r, err = os.Open(filename)
+		if err != nil {
+			log.Errorf("error opening file for reading: %s", err)
+			return err
+		}
+	}
+	defer r.Close()
+
+	n, err := io.Copy(buf, r)
+
 	if err != nil {
 		log.Errorf("rror reading from input file: %s", err)
 		return err

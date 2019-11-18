@@ -1,6 +1,7 @@
 package main
 
 import (
+	"io"
 	"os"
 	"os/exec"
 	"syscall"
@@ -9,8 +10,25 @@ import (
 )
 
 type execResult struct {
-	Status int
-	Output []byte
+	io.ReadCloser
+	Status    int
+	Output    []byte
+	readIndex int64
+}
+
+func (res *execResult) Close() error {
+	return nil
+}
+
+func (res *execResult) Read(p []byte) (n int, err error) {
+	if res.readIndex >= int64(len(res.Output)) {
+		err = io.EOF
+		return
+	}
+
+	n = copy(p, res.Output[res.readIndex:])
+	res.readIndex += int64(n)
+	return
 }
 
 func execShell(dir, cmd string) (res *execResult, err error) {
