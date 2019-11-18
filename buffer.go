@@ -59,12 +59,10 @@ func (b *buffer) Delete(addr Address) {
 	var start, end int
 
 	if addr.IsUnspecified() {
-		log.Printf("1")
 		start, end = b.index, b.index
 		b.lines = append(b.lines[:(start-1)], b.lines[end:]...)
 		b.index--
 	} else {
-		log.Printf("2")
 		if addr.End() == 0 {
 			start, end = addr.Start(), addr.Start()
 		} else {
