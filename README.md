@@ -1,4 +1,4 @@
-# ed
+# ed (the awesome UNIX line editor)
 
 `ed` is a clone of the UNIX command-line tool by the same name `ed` a line
 editor that was nortorious for being and most unfriendly editor ever created.
