@@ -36,7 +36,10 @@ type editor struct {
 func newEditor() (Editor, error) {
 	// TODO: Use functional options pattern here
 	rl, err := readline.NewEx(&readline.Config{
-		Prompt:  "> ",
+		Prompt:          "> ",
+		InterruptPrompt: "\nInterrupt, Press Ctrl+D to exit",
+		EOFPrompt:       "q",
+
 		VimMode: true,
 	})
 	if err != nil {
@@ -110,7 +113,6 @@ func (e *editor) Run() error {
 		line, err := e.rl.Readline()
 		if err != nil { // io.EOF
 			if err == readline.ErrInterrupt {
-				fmt.Println("^C")
 				e.mode = modeCommand
 				e.rl.SetPrompt("> ")
 				continue
