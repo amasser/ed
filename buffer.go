@@ -127,10 +127,15 @@ func (b *buffer) Select(addr Address, showlns bool) []string {
 	var lines []string
 
 	for i := addr.Start(); i <= addr.End(); i++ {
+		line := b.lines[(i - 1)]
 		if showlns {
-			lines = append(lines, fmt.Sprintf("%4d  %s", i, b.lines[(i-1)]))
+			if i == b.index {
+				lines = append(lines, fmt.Sprintf("%4d*  %s", i, line))
+			} else {
+				lines = append(lines, fmt.Sprintf("%4d   %s", i, line))
+			}
 		} else {
-			lines = append(lines, b.lines[(i-1)])
+			lines = append(lines, line)
 		}
 	}
 
