@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"regexp"
-	"strings"
 
 	"github.com/chzyer/readline"
 	log "github.com/sirupsen/logrus"
@@ -44,7 +43,7 @@ func newEditor() (Editor, error) {
 	// TODO: Use functional options pattern here
 	rl, err := readline.NewEx(&readline.Config{
 		Prompt:          "> ",
-		InterruptPrompt: "\nInterrupt, Press Ctrl+D to exit",
+		InterruptPrompt: ".",
 		EOFPrompt:       "q",
 
 		VimMode: true,
@@ -167,18 +166,13 @@ func (e *editor) Run() error {
 				log.Errorf("error processing command %s: %s", cmd.String(), err)
 			}
 		} else {
-			if strings.TrimSpace(line) == "." {
-				e.mode = modeCommand
-				e.rl.SetPrompt("> ")
-			} else {
-				switch e.mode {
-				case modeAppend:
-					e.buffer.Append(line)
-				case modeInsert:
-					e.buffer.Insert(line)
-				default:
-					panic("unknown input mode")
-				}
+			switch e.mode {
+			case modeAppend:
+				e.buffer.Append(line)
+			case modeInsert:
+				e.buffer.Insert(line)
+			default:
+				panic("unknown input mode")
 			}
 		}
 	}
