@@ -64,7 +64,7 @@ func cmdMove(e Editor, buf Buffer, cmd Command) error {
 
 	err := buf.Move(cmd.Addr())
 	if err != nil {
-		log.Errorf("error moving to line %d: %s", cmd.Addr().Start(), err)
+		log.Printf("error moving to line %d: %s", cmd.Addr().Start(), err)
 		return err
 	}
 	fmt.Println(buf.Current(false))
@@ -118,14 +118,14 @@ func cmdRead(e Editor, buf Buffer, cmd Command) error {
 
 	f, err := os.Open(filename)
 	if err != nil {
-		log.Errorf("error opening file for reading: %s", err)
+		log.Printf("error opening file for reading: %s", err)
 		return err
 	}
 	defer f.Close()
 
 	n, err := io.Copy(buf, f)
 	if err != nil {
-		log.Errorf("rror reading from input file: %s", err)
+		log.Printf("rror reading from input file: %s", err)
 		return err
 	}
 
@@ -152,14 +152,14 @@ func cmdWrite(e Editor, buf Buffer, cmd Command) error {
 
 	f, err := os.OpenFile(filename, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0644)
 	if err != nil {
-		log.Errorf("error opening file for writing: %s", err)
+		log.Printf("error opening file for writing: %s", err)
 		return err
 	}
 	defer f.Close()
 
 	n, err := io.Copy(f, buf)
 	if err != nil {
-		log.Errorf("rror writing to output file: %s", err)
+		log.Printf("rror writing to output file: %s", err)
 		return err
 	}
 

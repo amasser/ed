@@ -44,7 +44,7 @@ func main() {
 
 	e, err := newEditor()
 	if err != nil {
-		log.Errorf("error creating editor: %s", err)
+		log.Printf("error creating editor: %s", err)
 		os.Exit(1)
 	}
 
@@ -83,7 +83,7 @@ func main() {
 	}
 
 	if err := e.Run(); err != nil {
-		log.Errorf("error running editor: %s", err)
+		log.Printf("error running editor: %s", err)
 		os.Exit(1)
 	}
 }

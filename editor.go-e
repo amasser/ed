@@ -68,7 +68,7 @@ func (e *editor) ReadFrom(r io.Reader) (n int64, err error) {
 		n += int64(len(line) + 1)
 	}
 	if err = scanner.Err(); err != nil {
-		log.Errorf("error reading from reader: %s", err)
+		log.Printf("error reading from reader: %s", err)
 		return
 	}
 	fmt.Printf("%d\n", n)
@@ -125,23 +125,23 @@ func (e *editor) Run() error {
 		if e.mode == modeCommand {
 			cmd, err := parseCommand(line)
 			if err != nil {
-				log.Errorf("error parsing command: %s", err)
+				log.Printf("error parsing command: %s", err)
 				continue
 			}
 
 			if err := cmd.Validate(e.buffer); err != nil {
-				log.Errorf("error validating command: %s", err)
+				log.Printf("error validating command: %s", err)
 				continue
 			}
 
 			handler, ok := e.handlers[cmd.Cmd()]
 			if !ok {
-				log.Errorf("error unknown command: %s", line)
+				log.Printf("error unknown command: %s", line)
 				continue
 			}
 
 			if err := handler(e, e.buffer, cmd); err != nil {
-				log.Errorf("error processing command %s: %s", cmd.String(), err)
+				log.Printf("error processing command %s: %s", cmd.String(), err)
 			}
 		} else {
 			if strings.TrimSpace(line) == "." {

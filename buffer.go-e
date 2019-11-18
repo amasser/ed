@@ -156,7 +156,7 @@ func (b *buffer) ReadFrom(r io.Reader) (n int64, err error) {
 		n += int64(len(line) + 1)
 	}
 	if err = scanner.Err(); err != nil {
-		log.Errorf("error reading from reader: %s", err)
+		log.Printf("error reading from reader: %s", err)
 		return
 	}
 	return
