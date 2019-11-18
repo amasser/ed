@@ -59,10 +59,12 @@ func (b *buffer) Delete(addr Address) {
 	var start, end int
 
 	if addr.IsUnspecified() {
+		log.Printf("1")
 		start, end = b.index, b.index
 		b.lines = append(b.lines[:(start-1)], b.lines[end:]...)
 		b.index--
 	} else {
+		log.Printf("2")
 		if addr.End() == 0 {
 			start, end = addr.Start(), addr.Start()
 		} else {
@@ -122,24 +124,9 @@ func (b *buffer) Select(addr Address, showlns bool) []string {
 		return []string{b.lines[(b.index - 1)]}
 	}
 
-	var (
-		start, end int
-		lines      []string
-	)
+	var lines []string
 
-	// XXX: Generalize this
-	if addr.End() == 0 {
-		start, end = addr.Start(), addr.Start()
-	} else {
-		start = addr.Start()
-		if addr.End() == -1 {
-			end = len(b.lines)
-		} else {
-			end = addr.End()
-		}
-	}
-
-	for i := start; i <= end; i++ {
+	for i := addr.Start(); i <= addr.End(); i++ {
 		if showlns {
 			lines = append(lines, fmt.Sprintf("%04d  %s", i, b.lines[(i-1)]))
 		} else {

@@ -3,13 +3,12 @@ package main
 import (
 	"fmt"
 	"regexp"
-	"strconv"
 	"strings"
 )
 
 var (
 	cmdRegex = regexp.MustCompile(
-		`(?P<start>[0-9]+|\.)?(,(?P<end>[0-9]+|\$))?(?P<command>[a-zA-Z]*)(?P<arguments>.*)$`,
+		`(?P<start>[0-9]+|\.)?((?P<delim>,|;)(?P<end>[0-9]+|\$)?)?(?P<command>[a-zA-Z]*)(?P<arguments>.*)$`,
 	)
 )
 
@@ -17,7 +16,7 @@ var (
 type Command interface {
 	fmt.Stringer
 
-	Validate(bufsize int) error
+	Validate(buffer Buffer) error
 
 	Addr() Address
 	Arg(i int) string
@@ -25,7 +24,7 @@ type Command interface {
 }
 
 type command struct {
-	addr address
+	addr *address
 	cmd  string
 	args []string
 }
@@ -35,9 +34,9 @@ func (c command) String() string {
 	return fmt.Sprintf("%s%s %s", c.addr.String(), c.cmd, args)
 }
 
-func (c command) Validate(bufsize int) error {
-	if !c.addr.IsValid(bufsize) {
-		return errAddressOutOfRange
+func (c command) Validate(buffer Buffer) error {
+	if err := c.addr.Resolve(buffer); err != nil {
+		return err
 	}
 	return nil
 }
@@ -71,30 +70,11 @@ func parseCommand(line string) (cmd command, err error) {
 		}
 	}
 
-	var (
-		start int
-		end   int
-	)
-
-	if result["start"] == "." || result["start"] == "" {
-		start = 0
-	} else {
-		if start, err = strconv.Atoi(result["start"]); err != nil {
-			return
-		}
+	addr := &address{
+		start: result["start"],
+		delim: result["delim"],
+		end:   result["end"],
 	}
-
-	if result["end"] == "" {
-		end = 0
-	} else if result["end"] == "$" {
-		end = -1
-	} else {
-		if end, err = strconv.Atoi(result["end"]); err != nil {
-			return
-		}
-	}
-
-	addr := address{start, end}
 
 	args := strings.Split(strings.TrimSpace(result["arguments"]), " ")
 

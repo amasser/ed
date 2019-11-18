@@ -4,10 +4,10 @@ import (
 	"bufio"
 	"fmt"
 	"io"
-	"log"
 	"strings"
 
 	"github.com/chzyer/readline"
+	log "github.com/sirupsen/logrus"
 )
 
 // Editor ...
@@ -131,7 +131,7 @@ func (e *editor) Run() error {
 				continue
 			}
 
-			if err := cmd.Validate(e.buffer.Size()); err != nil {
+			if err := cmd.Validate(e.buffer); err != nil {
 				log.Printf("error validating command: %s", err)
 				continue
 			}

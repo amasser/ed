@@ -69,7 +69,7 @@ func cmdMove(e Editor, buf Buffer, cmd Command) error {
 
 func cmdNumber(e Editor, buf Buffer, cmd Command) error {
 	selection := buf.Select(cmd.Addr(), true)
-	source := strings.Join(selection, "\n")
+	source := strings.Join(selection, "\n") + "\n"
 	err := syntax.Highlight(os.Stdout, source, "go", "terminal16m", "vim")
 	if err != nil {
 		log.WithError(err).Error("error syntax highlighting selection")
@@ -81,7 +81,7 @@ func cmdNumber(e Editor, buf Buffer, cmd Command) error {
 
 func cmdPrint(e Editor, buf Buffer, cmd Command) error {
 	selection := buf.Select(cmd.Addr(), false)
-	source := strings.Join(selection, "\n")
+	source := strings.Join(selection, "\n") + "\n"
 	err := syntax.Highlight(os.Stdout, source, "go", "terminal16m", "vim")
 	if err != nil {
 		log.WithError(err).Error("error syntax highlighting selection")
