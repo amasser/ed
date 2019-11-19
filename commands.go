@@ -101,9 +101,9 @@ func cmdNumber(e Editor, buf Buffer, cmd Command) error {
 	scanner := bufio.NewScanner(bytes.NewBuffer(out.Bytes()))
 	for scanner.Scan() {
 		if ln == buf.Index() {
-			fmt.Printf("%4d*  %s\n", ln, scanner.Text())
+			fmt.Printf("\033[1;32m%4d\033[0m*  %s\n", ln, scanner.Text())
 		} else {
-			fmt.Printf("%4d  %s\n", ln, scanner.Text())
+			fmt.Printf("\033[1;32m%4d\033[0m  %s\n", ln, scanner.Text())
 		}
 		ln++
 	}
