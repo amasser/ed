@@ -9,7 +9,6 @@ import (
 	"regexp"
 	"strings"
 
-	syntax "github.com/alecthomas/chroma/quick"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -91,7 +90,8 @@ func cmdNumber(e Editor, buf Buffer, cmd Command) error {
 
 	out := &bytes.Buffer{}
 	source := strings.Join(selection, "\n") + "\n"
-	err := syntax.Highlight(out, source, "", "terminal16m", "vim")
+
+	err := highlightSource(out, e.Filename(), source, "terminal16m", "vim")
 	if err != nil {
 		log.WithError(err).Error("error syntax highlighting selection")
 		return err
@@ -118,11 +118,13 @@ func cmdNumber(e Editor, buf Buffer, cmd Command) error {
 func cmdPrint(e Editor, buf Buffer, cmd Command) error {
 	selection := buf.Select(cmd.Addr())
 	source := strings.Join(selection, "\n") + "\n"
-	err := syntax.Highlight(os.Stdout, source, "go", "terminal16m", "vim")
+
+	err := highlightSource(os.Stdout, e.Filename(), source, "terminal16m", "vim")
 	if err != nil {
 		log.WithError(err).Error("error syntax highlighting selection")
 		return err
 	}
+
 	return nil
 }
 

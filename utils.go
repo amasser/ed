@@ -6,6 +6,10 @@ import (
 	"os/exec"
 	"syscall"
 
+	"github.com/alecthomas/chroma"
+	"github.com/alecthomas/chroma/formatters"
+	"github.com/alecthomas/chroma/lexers"
+	"github.com/alecthomas/chroma/styles"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -69,4 +73,40 @@ func fileExists(name string) bool {
 		}
 	}
 	return true
+}
+
+func detectLexer(filename, source string) (lexer chroma.Lexer) {
+	if filename != "" {
+		lexer := lexers.Match(filename)
+		if lexer != nil {
+			return lexer
+		}
+	}
+	return lexers.Analyse(source)
+}
+
+func highlightSource(w io.Writer, filename, source, formatter, style string) error {
+	l := detectLexer(filename, source)
+	if l == nil {
+		l = lexers.Fallback
+	}
+	l = chroma.Coalesce(l)
+
+	// Determine formatter.
+	f := formatters.Get(formatter)
+	if f == nil {
+		f = formatters.Fallback
+	}
+
+	// Determine style.
+	s := styles.Get(style)
+	if s == nil {
+		s = styles.Fallback
+	}
+
+	it, err := l.Tokenise(nil, source)
+	if err != nil {
+		return err
+	}
+	return f.Format(w, s, it)
 }
